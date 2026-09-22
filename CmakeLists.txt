@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 3.24)
+
+project(celest_clone)
+
+# Find and include required packages
+find_package(spdlog CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+find_package(SDL3 CONFIG REQUIRED)
+find_package(SDL3_shadercross CONFIG REQUIRED)
+
+# Set C++ Standard
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Include directories for the project
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
+# Source Files
+file(GLOB_RECURSE USER_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/src/*.cpp"
+)
+
+# Add executable
+add_executable(${PROJECT_NAME}
+    main.cpp
+    ${USER_SOURCES}
+)
+
+# Link required packages
+target_link_libraries(celest_clone PRIVATE spdlog::spdlog fmt::fmt SDL3::SDL3 SDL3_shadercross::SDL3_shadercross)
+
+# copy assets folder to build directory after build
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/assets
+    $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
+    COMMENT "Copying assets folder to build directory"
+)
