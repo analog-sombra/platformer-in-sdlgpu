@@ -76,17 +76,17 @@ namespace Engine
     {
 
         SDL_GPUCommandBuffer *commandBuffer = SDL_AcquireGPUCommandBuffer(device.get());
-        // if (commandBuffer == NULL)
-        // {
-        //     spdlog::error("Failed to acquire GPU command buffer");
-        // }
+        if (commandBuffer == NULL)
+        {
+            spdlog::error("Failed to acquire GPU command buffer");
+        }
 
         SDL_GPUTexture *swapchainTexture;
         Uint32 width, height;
-        !SDL_WaitAndAcquireGPUSwapchainTexture(commandBuffer, window.get(), &swapchainTexture, &width, &height);
-        // {
-        //     spdlog::error("Failed to acquire GPU swapchain texture {}", SDL_GetError());
-        // }
+        if (!SDL_WaitAndAcquireGPUSwapchainTexture(commandBuffer, window.get(), &swapchainTexture, &width, &height))
+        {
+            spdlog::error("Failed to acquire GPU swapchain texture {}", SDL_GetError());
+        }
 
         SDL_GPUColorTargetInfo colorTargetInfo{};
         // blue sky color
