@@ -11,6 +11,7 @@
 #include <spdlog/spdlog.h>
 #include <fmt/core.h>
 #include "graphics/deleter.hpp"
+#include "graphics/render.hpp"
 
 namespace Engine
 {
@@ -21,6 +22,8 @@ namespace Engine
 
         Engine::Graphics::WindowPtr window = nullptr;
         Engine::Graphics::DevicePtr device = nullptr;
+
+        Engine::Graphics::Render renderer;
 
     public:
         Game();

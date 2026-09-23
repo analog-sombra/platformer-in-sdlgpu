@@ -55,6 +55,8 @@ namespace Engine
         }
 
         SDL_ClaimWindowForGPUDevice(device.get(), window.get());
+
+        renderer = Engine::Graphics::Render(window.get(), device.get());
     }
 
     void Game::run()
@@ -74,34 +76,9 @@ namespace Engine
 
     void Game::Render()
     {
-
-        SDL_GPUCommandBuffer *commandBuffer = SDL_AcquireGPUCommandBuffer(device.get());
-        if (commandBuffer == NULL)
-        {
-            spdlog::error("Failed to acquire GPU command buffer");
-        }
-
-        SDL_GPUTexture *swapchainTexture;
-        Uint32 width, height;
-        if (!SDL_WaitAndAcquireGPUSwapchainTexture(commandBuffer, window.get(), &swapchainTexture, &width, &height))
-        {
-            spdlog::error("Failed to acquire GPU swapchain texture {}", SDL_GetError());
-        }
-
-        SDL_GPUColorTargetInfo colorTargetInfo{};
-        // blue sky color
-        colorTargetInfo.clear_color = {0.0f, 0.5f, 1.0f, 1.0f};
-        colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
-        colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
-        colorTargetInfo.texture = swapchainTexture;
-
-        // begin a render pass
-        SDL_GPURenderPass *renderPass = SDL_BeginGPURenderPass(commandBuffer, &colorTargetInfo, 1, NULL);
-        // end the render pass
-        SDL_EndGPURenderPass(renderPass);
-
-        // submit the command buffer
-        SDL_SubmitGPUCommandBuffer(commandBuffer);
+        renderer.Acquire();
+        renderer.StartRender();
+        renderer.EndRender();
     }
 
     void Game::HandleInput()
