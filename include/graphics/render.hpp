@@ -26,6 +26,9 @@ namespace Engine::Graphics
         void Acquire();
         void StartRender();
         void EndRender();
+        
+        SDL_GPURenderPass *GetRenderPass() { return renderPass; }
+        SDL_GPUCommandBuffer *GetCommandBuffer() { return commandBuffer; }
     };
 } // namespace Engine::Graphics
 

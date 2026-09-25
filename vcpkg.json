@@ -13,7 +13,14 @@
       "name": "sdl3"
     },
     {
+      "name": "sdl3-image",
+      "features": ["png", "jpeg"]
+    },
+    {
       "name": "sdl3-shadercross"
+    },
+    {
+      "name": "glm"
     }
   ]
 }

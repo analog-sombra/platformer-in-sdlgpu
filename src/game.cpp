@@ -57,6 +57,8 @@ namespace Engine
         SDL_ClaimWindowForGPUDevice(device.get(), window.get());
 
         renderer = Engine::Graphics::Render(window.get(), device.get());
+
+        button = Engine::Elements::Button(window.get(), device.get());
     }
 
     void Game::run()
@@ -72,12 +74,16 @@ namespace Engine
     void Game::Update()
     {
         // Update implementation
+        button.update();
     }
 
     void Game::Render()
     {
         renderer.Acquire();
         renderer.StartRender();
+
+        button.render(renderer.GetRenderPass(), renderer.GetCommandBuffer());
+
         renderer.EndRender();
     }
 
@@ -91,5 +97,6 @@ namespace Engine
                 isRunning = false;
             }
         }
+        button.handleEvent();
     }
 }

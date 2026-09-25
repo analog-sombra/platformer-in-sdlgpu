@@ -12,6 +12,7 @@
 #include <fmt/core.h>
 #include "graphics/deleter.hpp"
 #include "graphics/render.hpp"
+#include "elements/button.hpp"
 
 namespace Engine
 {
@@ -24,6 +25,7 @@ namespace Engine
         Engine::Graphics::DevicePtr device = nullptr;
 
         Engine::Graphics::Render renderer;
+        Engine::Elements::Button button;
 
     public:
         Game();
@@ -33,6 +35,8 @@ namespace Engine
         void Update();
         void Render();
         void HandleInput();
+
+        
     };
 }
 
