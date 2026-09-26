@@ -2,7 +2,11 @@
 
 namespace Engine::Graphics
 {
-    SDL_GPUSampler *CreateSampler(SDL_GPUDevice *device)
+    GpuSampler::GpuSampler() {}
+
+    GpuSampler::~GpuSampler() {}
+
+    void GpuSampler::CreateSampler(SDL_GPUDevice *device)
     {
         SDL_GPUSamplerCreateInfo samplerInfo{};
         samplerInfo.min_filter = SDL_GPU_FILTER_LINEAR;
@@ -20,6 +24,6 @@ namespace Engine::Graphics
         samplerInfo.address_mode_w =
             SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
 
-        return SDL_CreateGPUSampler(device, &samplerInfo);
+        sampler = SDL_CreateGPUSampler(device, &samplerInfo);
     }
 }

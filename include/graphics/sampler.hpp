@@ -5,6 +5,18 @@
 
 namespace Engine::Graphics
 {
-    SDL_GPUSampler *CreateSampler(SDL_GPUDevice *device);
+
+    class GpuSampler
+    {
+    private:
+        SDL_GPUSampler *sampler;
+
+    public:
+        GpuSampler();
+        ~GpuSampler();
+        void CreateSampler(SDL_GPUDevice *device);
+        SDL_GPUSampler *GetSampler() { return sampler; }
+    };
+
 }
 #endif // __GRAPHICS_SAMPLER_HPP__

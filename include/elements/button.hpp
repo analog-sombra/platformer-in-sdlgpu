@@ -8,10 +8,11 @@
 #include <spdlog/spdlog.h>
 #include <fmt/core.h>
 #include <SDL3_image/SDL_image.h>
-#include "graphics/shader.hpp"
 #include "graphics/sampler.hpp"
 #include "graphics/gpu_utils.hpp"
-#include "graphics/gpu_utils.hpp"
+#include "graphics/vertex.hpp"
+#include "graphics/indices.hpp"
+#include "graphics/pipeline.hpp"
 #include <vector>
 
 namespace Engine::Elements
@@ -24,11 +25,10 @@ namespace Engine::Elements
         SDL_Window *window;
         SDL_GPUDevice *device;
 
-        Engine::Graphics::GpuBufferUtils vertexBuffer;
-        
-        // SDL_GPUBuffer *vertexBuffer;
-        SDL_GPUBuffer *indexBuffer;
-        SDL_GPUGraphicsPipeline *graphicsPipeline;
+        Engine::Graphics::VertexGpuBuffer vertexBuffer;
+        Engine::Graphics::IndicesGpuBuffer indexBuffer;
+
+        Engine::Graphics::GpuPipeline gpuPipeline;
         SDL_GPUSampler *sampler;
         SDL_GPUTexture *texture;
 

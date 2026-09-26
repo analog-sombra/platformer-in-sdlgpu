@@ -12,6 +12,7 @@
 #include <fmt/core.h>
 #include "graphics/deleter.hpp"
 #include "graphics/render.hpp"
+#include "graphics/vertex.hpp"
 #include "elements/button.hpp"
 
 namespace Engine

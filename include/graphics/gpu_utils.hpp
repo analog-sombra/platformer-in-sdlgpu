@@ -11,34 +11,6 @@
 namespace Engine::Graphics
 {
 
-    struct TextureVertex
-    {
-        float x, y, z; // vec3 position
-        float u, v;    // texture coordinates
-    };
-
-    class GpuBufferUtils
-    {
-
-    private:
-        SDL_GPUDevice *device;
-        std::vector<TextureVertex> vertices;
-        SDL_GPUBuffer *buffer;
-        SDL_GPUTransferBuffer *transferBuffer;
-
-    public:
-        GpuBufferUtils();
-        GpuBufferUtils(SDL_GPUDevice *device, std::vector<TextureVertex> vertices);
-        ~GpuBufferUtils();
-
-        void CreateGPUBuffer();
-        void TransferToGPUBuffer();
-        void UploadToGPUBuffer(SDL_GPUCopyPass *copyPass);
-        void BindGPUBuffer(SDL_GPURenderPass *renderPass);
-
-        SDL_GPUBuffer *GetBuffer() { return buffer; }
-    };
-
     // ------------------Texture------------------
 
     struct TextureData
