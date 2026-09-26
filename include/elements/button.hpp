@@ -9,6 +9,9 @@
 #include <fmt/core.h>
 #include <SDL3_image/SDL_image.h>
 #include "graphics/shader.hpp"
+#include "graphics/sampler.hpp"
+#include "graphics/gpu_utils.hpp"
+#include <vector>
 
 namespace Engine::Elements
 {

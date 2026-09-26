@@ -13,16 +13,7 @@ namespace Engine::Elements
             glm::vec3 scale{1.0f, 1.0f, 1.0f};
         };
 
-
-        struct Vertex
-        {
-            float x, y, z; // vec3 position
-            float u, v;    // texture coordinates
-        };
-
-        // a list of vertices
-        static Vertex vertices[]{
-            // 4 vertives for rect
+        std::vector<Engine::Graphics::TextureVertex> vertices = {
             {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f}, // bottom left
             {0.5f, -0.5f, 0.0f, 1.0f, 0.0f},  // bottom right
             {0.5f, 0.5f, 0.0f, 1.0f, 1.0f},   // top right
@@ -37,7 +28,7 @@ namespace Engine::Elements
         {
             glm::mat4 model;
         };
-        
+
         Transform transform;
 
         transform.position = {0.0f, 0.0f, 0.0f};
@@ -63,10 +54,7 @@ namespace Engine::Elements
         transformData.model = model;
 
         // create the vertex buffer
-        SDL_GPUBufferCreateInfo bufferInfo{};
-        bufferInfo.size = sizeof(vertices);
-        bufferInfo.usage = SDL_GPU_BUFFERUSAGE_VERTEX;
-        vertexBuffer = SDL_CreateGPUBuffer(device, &bufferInfo);
+        vertexBuffer = Engine::Graphics::CreateGPUBuffer(device, vertices);
 
         // create the index buffer
         SDL_GPUBufferCreateInfo indexBufferInfo{};
@@ -108,7 +96,7 @@ namespace Engine::Elements
 
         // create transfer buffers to upload to GPU buffers
         SDL_GPUTransferBufferCreateInfo vertexTransferInfo{};
-        vertexTransferInfo.size = sizeof(vertices);
+        vertexTransferInfo.size = vertices.size() * sizeof(Engine::Graphics::TextureVertex);
         vertexTransferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
         SDL_GPUTransferBuffer *vertexTransferBuffer = SDL_CreateGPUTransferBuffer(device, &vertexTransferInfo);
 
@@ -123,8 +111,8 @@ namespace Engine::Elements
         SDL_GPUTransferBuffer *textureTransferBuffer = SDL_CreateGPUTransferBuffer(device, &transferInfo);
 
         // upload vertex data
-        Vertex *vertexData = (Vertex *)SDL_MapGPUTransferBuffer(device, vertexTransferBuffer, false);
-        SDL_memcpy(vertexData, vertices, sizeof(vertices));
+        Engine::Graphics::TextureVertex *vertexData = (Engine::Graphics::TextureVertex *)SDL_MapGPUTransferBuffer(device, vertexTransferBuffer, false);
+        SDL_memcpy(vertexData, vertices.data(), vertices.size() * sizeof(Engine::Graphics::TextureVertex));
         SDL_UnmapGPUTransferBuffer(device, vertexTransferBuffer);
 
         // upload index data
@@ -148,7 +136,7 @@ namespace Engine::Elements
 
         SDL_GPUBufferRegion vertexRegion{};
         vertexRegion.buffer = vertexBuffer;
-        vertexRegion.size = sizeof(vertices);
+        vertexRegion.size = vertices.size() * sizeof(Engine::Graphics::TextureVertex);
         vertexRegion.offset = 0;
 
         SDL_UploadToGPUBuffer(copyPass, &vertexLocation, &vertexRegion, false);
@@ -195,23 +183,9 @@ namespace Engine::Elements
         SDL_GPUShader *fragmentShader = shader.CreateShader(device, Engine::Graphics::FRAGMENT_SHADER, "assets/shaders/texturefragment.spv");
 
         // creating the GPU sampler
-        SDL_GPUSamplerCreateInfo samplerInfo{};
-        samplerInfo.min_filter = SDL_GPU_FILTER_LINEAR;
-        samplerInfo.mag_filter = SDL_GPU_FILTER_LINEAR;
+        SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
 
-        samplerInfo.mipmap_mode =
-            SDL_GPU_SAMPLERMIPMAPMODE_NEAREST;
-
-        samplerInfo.address_mode_u =
-            SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
-
-        samplerInfo.address_mode_v =
-            SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
-
-        samplerInfo.address_mode_w =
-            SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE;
-
-        sampler = SDL_CreateGPUSampler(device, &samplerInfo);
+        sampler = Engine::Graphics::CreateSampler(device);
 
         SDL_GPUGraphicsPipelineCreateInfo pipelineInfo{};
 
@@ -227,7 +201,7 @@ namespace Engine::Elements
         vertexBufferDesctiptions[0].slot = 0;
         vertexBufferDesctiptions[0].input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX;
         vertexBufferDesctiptions[0].instance_step_rate = 0;
-        vertexBufferDesctiptions[0].pitch = sizeof(Vertex);
+        vertexBufferDesctiptions[0].pitch = sizeof(Engine::Graphics::TextureVertex);
 
         pipelineInfo.vertex_input_state.num_vertex_buffers = 1;
         pipelineInfo.vertex_input_state.vertex_buffer_descriptions = vertexBufferDesctiptions;
