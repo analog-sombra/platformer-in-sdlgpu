@@ -11,6 +11,7 @@
 #include "graphics/shader.hpp"
 #include "graphics/sampler.hpp"
 #include "graphics/gpu_utils.hpp"
+#include "graphics/gpu_utils.hpp"
 #include <vector>
 
 namespace Engine::Elements
@@ -23,7 +24,9 @@ namespace Engine::Elements
         SDL_Window *window;
         SDL_GPUDevice *device;
 
-        SDL_GPUBuffer *vertexBuffer;
+        Engine::Graphics::GpuBufferUtils vertexBuffer;
+        
+        // SDL_GPUBuffer *vertexBuffer;
         SDL_GPUBuffer *indexBuffer;
         SDL_GPUGraphicsPipeline *graphicsPipeline;
         SDL_GPUSampler *sampler;
