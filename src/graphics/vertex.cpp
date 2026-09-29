@@ -13,8 +13,12 @@ namespace Engine::Graphics
 
     VertexGpuBuffer::~VertexGpuBuffer()
     {
-        // SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
-        // SDL_ReleaseGPUBuffer(device, buffer);
+        // {
+        //     if (device && buffer)
+        //     {
+        //         SDL_ReleaseGPUBuffer(device, buffer);
+        //     }
+        // }
     }
 
     void VertexGpuBuffer::CreateGPUBuffer()
@@ -62,5 +66,4 @@ namespace Engine::Graphics
 
         SDL_BindGPUVertexBuffers(renderPass, 0, bufferBindings, 1); // bind one buffer starting from slot 0
     }
-
 }

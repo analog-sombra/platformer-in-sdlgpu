@@ -7,11 +7,11 @@
 
 #include <spdlog/spdlog.h>
 #include <fmt/core.h>
-#include <SDL3_image/SDL_image.h>
 #include "graphics/sampler.hpp"
 #include "graphics/gpu_utils.hpp"
 #include "graphics/vertex.hpp"
 #include "graphics/indices.hpp"
+#include "graphics/texture.hpp"
 #include "graphics/pipeline.hpp"
 #include <vector>
 
@@ -27,10 +27,10 @@ namespace Engine::Elements
 
         Engine::Graphics::VertexGpuBuffer vertexBuffer;
         Engine::Graphics::IndicesGpuBuffer indexBuffer;
+        Engine::Graphics::TextureGpuBuffer textureBuffer;
 
         Engine::Graphics::GpuPipeline gpuPipeline;
-        SDL_GPUSampler *sampler;
-        SDL_GPUTexture *texture;
+        Engine::Graphics::GpuSampler sampler;
 
         glm::mat4 model;
 

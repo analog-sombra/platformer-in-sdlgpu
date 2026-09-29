@@ -61,25 +61,14 @@ namespace Engine::Elements
         indexBuffer = Engine::Graphics::IndicesGpuBuffer(device, indices);
         indexBuffer.CreateGPUBuffer();
 
-        // texture = Engine::Graphics::ImageToGPUTexture(device, "./assets/bg.jpg");
-        Engine::Graphics::TextureData textureData = Engine::Graphics::ImageToGPUTexture(device, "./assets/bg.jpg");
-        texture = textureData.texture;
-        SDL_Surface *rgbaSurface = textureData.surface;
+        // create the texture buffer
+        textureBuffer = Engine::Graphics::TextureGpuBuffer(device, "./assets/bg.jpg");
+        textureBuffer.CreateGPUBuffer();
 
         // create transfer buffers to upload to GPU buffers
         vertexBuffer.TransferToGPUBuffer();
         indexBuffer.TransferToGPUBuffer();
-
-        SDL_GPUTransferBufferCreateInfo transferInfo{};
-        transferInfo.size = static_cast<Uint32>(rgbaSurface->w * rgbaSurface->h * 4);
-        transferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
-        SDL_GPUTransferBuffer *textureTransferBuffer = SDL_CreateGPUTransferBuffer(device, &transferInfo);
-
-
-        // upload texture data
-        void *mapped = SDL_MapGPUTransferBuffer(device, textureTransferBuffer, false);
-        SDL_memcpy(mapped, rgbaSurface->pixels, rgbaSurface->h * rgbaSurface->pitch);
-        SDL_UnmapGPUTransferBuffer(device, textureTransferBuffer);
+        textureBuffer.TransferToGPUBuffer();
 
         // start a copy pass
         SDL_GPUCommandBuffer *commandBuffer = SDL_AcquireGPUCommandBuffer(device);
@@ -87,35 +76,14 @@ namespace Engine::Elements
 
         vertexBuffer.UploadToGPUBuffer(copyPass);
         indexBuffer.UploadToGPUBuffer(copyPass);
-
-        SDL_GPUTextureTransferInfo source{};
-        source.transfer_buffer = textureTransferBuffer;
-        source.offset = 0;
-        source.pixels_per_row = rgbaSurface->w;
-        source.rows_per_layer = rgbaSurface->h;
-
-        SDL_GPUTextureRegion destination{};
-        destination.texture = texture;
-        destination.mip_level = 0;
-        destination.layer = 0;
-
-        destination.x = 0;
-        destination.y = 0;
-        destination.z = 0;
-
-        destination.w = rgbaSurface->w;
-        destination.h = rgbaSurface->h;
-        destination.d = 1;
-        SDL_UploadToGPUTexture(copyPass, &source, &destination, false);
+        textureBuffer.UploadToGPUBuffer(copyPass);
 
         // end the copy pass
         SDL_EndGPUCopyPass(copyPass);
         SDL_SubmitGPUCommandBuffer(commandBuffer);
 
-              // creating the GPU sampler
-        Engine::Graphics::GpuSampler gpuSampler;
-        gpuSampler.CreateSampler(device);
-        sampler = gpuSampler.GetSampler();
+        // creating the GPU sampler
+        textureBuffer.CreateSampler();
 
         gpuPipeline = Engine::Graphics::GpuPipeline(window);
         gpuPipeline.CreatePipeline(device);
@@ -135,10 +103,7 @@ namespace Engine::Elements
         indexBuffer.BindGPUBuffer(renderPass);
 
         // bind the sampler
-        SDL_GPUTextureSamplerBinding textureBinding{};
-        textureBinding.texture = texture;
-        textureBinding.sampler = sampler;
-        SDL_BindGPUFragmentSamplers(renderPass, 0, &textureBinding, 1);
+        textureBuffer.BindGPUBuffer(renderPass);
 
         SDL_PushGPUVertexUniformData(
             commandBuffer,
