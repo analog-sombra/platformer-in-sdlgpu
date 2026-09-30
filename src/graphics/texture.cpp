@@ -97,4 +97,18 @@ namespace Engine::Graphics
     {
         sampler.CreateSampler(device);
     }
+
+    void TextureGpuBuffer::Cleanup()
+    {
+        if (device && texture)
+        {
+            SDL_ReleaseGPUTexture(device, texture);
+        }
+        if (device && transferBuffer)
+        {
+            SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
+        }
+        sampler.Cleanup();
+    }
+
 }

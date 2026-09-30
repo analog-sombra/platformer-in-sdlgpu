@@ -2,13 +2,13 @@
 
 namespace Engine::Graphics
 {
-    GpuPipeline::GpuPipeline(SDL_Window *window) : window(window)
+    GpuPipeline::GpuPipeline(SDL_Window *window, SDL_GPUDevice *device) : window(window), device(device)
     {
     }
     GpuPipeline::~GpuPipeline()
     {
     }
-    void GpuPipeline::CreatePipeline(SDL_GPUDevice *device)
+    void GpuPipeline::CreatePipeline()
     {
         Engine::Graphics::Shader shader = Engine::Graphics::Shader();
 
@@ -78,5 +78,13 @@ namespace Engine::Graphics
     void GpuPipeline::BindGpuPipeline(SDL_GPURenderPass *renderPass)
     {
         SDL_BindGPUGraphicsPipeline(renderPass, pipeline);
+    }
+
+    void GpuPipeline::Cleanup()
+    {
+        if (device && pipeline)
+        {
+            SDL_ReleaseGPUGraphicsPipeline(device, pipeline);
+        }
     }
 }

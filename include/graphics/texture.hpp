@@ -35,6 +35,8 @@ namespace Engine::Graphics
         void CreateSampler();
 
         SDL_GPUTexture *GetTexture() { return texture; }
+
+        void Cleanup();
     };
 
 }

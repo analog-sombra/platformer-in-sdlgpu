@@ -28,6 +28,7 @@ namespace Engine
 
     Game::~Game()
     {
+        button.Cleanup();
     }
 
     void Game::Initialize()

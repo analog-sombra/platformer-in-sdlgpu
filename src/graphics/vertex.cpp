@@ -13,12 +13,6 @@ namespace Engine::Graphics
 
     VertexGpuBuffer::~VertexGpuBuffer()
     {
-        // {
-        //     if (device && buffer)
-        //     {
-        //         SDL_ReleaseGPUBuffer(device, buffer);
-        //     }
-        // }
     }
 
     void VertexGpuBuffer::CreateGPUBuffer()
@@ -65,5 +59,17 @@ namespace Engine::Graphics
         bufferBindings[0].offset = 0;      // start from the first byte
 
         SDL_BindGPUVertexBuffers(renderPass, 0, bufferBindings, 1); // bind one buffer starting from slot 0
+    }
+
+    void VertexGpuBuffer::Cleanup()
+    {
+        if (device && buffer)
+        {
+            SDL_ReleaseGPUBuffer(device, buffer);
+        }
+        if (device && transferBuffer)
+        {
+            SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
+        }
     }
 }

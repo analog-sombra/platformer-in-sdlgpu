@@ -16,6 +16,7 @@ namespace Engine::Graphics
         ~GpuSampler();
         void CreateSampler(SDL_GPUDevice *device);
         SDL_GPUSampler *GetSampler() { return sampler; }
+        void Cleanup();
     };
 
 }

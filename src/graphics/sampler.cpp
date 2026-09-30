@@ -26,4 +26,12 @@ namespace Engine::Graphics
 
         sampler = SDL_CreateGPUSampler(device, &samplerInfo);
     }
+
+    void GpuSampler::Cleanup()
+    {
+        // if (sampler)
+        // {
+        //     SDL_ReleaseGPUSampler(sampler);
+        // }
+    }
 }

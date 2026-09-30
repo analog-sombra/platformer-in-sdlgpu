@@ -3,6 +3,7 @@
 
 #include <SDL3/SDL_gpu.h>
 #include <vector>
+#include <spdlog/spdlog.h>
 
 namespace Engine::Graphics
 {
@@ -33,6 +34,8 @@ namespace Engine::Graphics
         void BindGPUBuffer(SDL_GPURenderPass *renderPass);
 
         SDL_GPUBuffer *GetVertexBuffer() { return buffer; }
+
+        void Cleanup();
     };
 
 }

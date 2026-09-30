@@ -11,15 +11,18 @@ namespace Engine::Graphics
     {
     public:
         GpuPipeline() {};
-        GpuPipeline(SDL_Window *window);
+        GpuPipeline(SDL_Window *window, SDL_GPUDevice *device);
         ~GpuPipeline();
 
-        void CreatePipeline(SDL_GPUDevice *device);
+        void CreatePipeline();
         void BindGpuPipeline(SDL_GPURenderPass *renderPass);
         SDL_GPUGraphicsPipeline *GetPipeline() { return pipeline; }
 
+        void Cleanup();
+
     private:
         SDL_Window *window;
+        SDL_GPUDevice *device;
         SDL_GPUGraphicsPipeline *pipeline;
     };
 }

@@ -59,4 +59,15 @@ namespace Engine::Graphics
         SDL_BindGPUIndexBuffer(renderPass, &indexBufferBinding, SDL_GPU_INDEXELEMENTSIZE_32BIT);
     }
 
+    void IndicesGpuBuffer::Cleanup()
+    {
+        if (device && buffer)
+        {
+            SDL_ReleaseGPUBuffer(device, buffer);
+        }
+        if (device && transferBuffer)
+        {
+            SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
+        }
+    }
 }

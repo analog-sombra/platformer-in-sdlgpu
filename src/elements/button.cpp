@@ -85,8 +85,8 @@ namespace Engine::Elements
         // creating the GPU sampler
         textureBuffer.CreateSampler();
 
-        gpuPipeline = Engine::Graphics::GpuPipeline(window);
-        gpuPipeline.CreatePipeline(device);
+        gpuPipeline = Engine::Graphics::GpuPipeline(window, device);
+        gpuPipeline.CreatePipeline();
     }
 
     Button::~Button() {}
@@ -118,4 +118,9 @@ namespace Engine::Elements
     void Button::update() {}
 
     void Button::handleEvent() {}
+
+    void Button::Cleanup()
+    {
+        vertexBuffer.Cleanup();
+    }
 }

@@ -8,7 +8,6 @@
 #include <spdlog/spdlog.h>
 #include <fmt/core.h>
 #include "graphics/sampler.hpp"
-#include "graphics/gpu_utils.hpp"
 #include "graphics/vertex.hpp"
 #include "graphics/indices.hpp"
 #include "graphics/texture.hpp"
@@ -42,6 +41,8 @@ namespace Engine::Elements
         void render(SDL_GPURenderPass *renderPass, SDL_GPUCommandBuffer *commandBuffer);
         void update();
         void handleEvent();
+
+        void Cleanup();
     };
 }
 #endif // __ELEMENTN_BUTTON_HPP__

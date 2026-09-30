@@ -27,6 +27,8 @@ namespace Engine::Graphics
         void BindGPUBuffer(SDL_GPURenderPass *renderPass);
 
         SDL_GPUBuffer *GetIndexBuffer() { return buffer; }
+
+        void Cleanup();
     };
 
 }
