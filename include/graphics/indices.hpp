@@ -17,7 +17,6 @@ namespace Engine::Graphics
         SDL_GPUTransferBuffer *transferBuffer;
 
     public:
-        IndicesGpuBuffer();
         IndicesGpuBuffer(SDL_GPUDevice *device, std::vector<uint32_t> indices);
         ~IndicesGpuBuffer();
 

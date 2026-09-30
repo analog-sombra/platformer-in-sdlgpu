@@ -7,6 +7,7 @@ namespace Engine::Graphics
     }
     GpuPipeline::~GpuPipeline()
     {
+        Cleanup();
     }
     void GpuPipeline::CreatePipeline()
     {
@@ -43,9 +44,9 @@ namespace Engine::Graphics
         vertexAttributes[0].format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3; // vec3
         vertexAttributes[0].offset = 0;                                  // start from the first byte from current buffer position
 
-        // a_color
+        // a_texCoord
         vertexAttributes[1].buffer_slot = 0;                             // use buffer at slot 0
-        vertexAttributes[1].location = 1;                                // layout (location = 1) in shader
+        vertexAttributes[1].location = 1;                                // layout (location = 2) in shader
         vertexAttributes[1].format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2; // vec2
         vertexAttributes[1].offset = sizeof(float) * 3;                  // 4th float from current buffer position
 

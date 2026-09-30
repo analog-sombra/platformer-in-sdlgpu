@@ -2,9 +2,6 @@
 
 namespace Engine::Graphics
 {
-    TextureGpuBuffer::TextureGpuBuffer()
-    {
-    }
 
     TextureGpuBuffer::TextureGpuBuffer(SDL_GPUDevice *device, const std::string &filePath) : device(device), imagePath(filePath)
     {
@@ -12,6 +9,7 @@ namespace Engine::Graphics
 
     TextureGpuBuffer::~TextureGpuBuffer()
     {
+        Cleanup();
     }
 
     void TextureGpuBuffer::CreateGPUBuffer()

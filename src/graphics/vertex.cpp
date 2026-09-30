@@ -2,9 +2,6 @@
 
 namespace Engine::Graphics
 {
-    VertexGpuBuffer::VertexGpuBuffer()
-    {
-    }
 
     VertexGpuBuffer::VertexGpuBuffer(SDL_GPUDevice *device, std::vector<TextureVertex> vertices)
         : device(device), vertices(vertices)
@@ -13,6 +10,7 @@ namespace Engine::Graphics
 
     VertexGpuBuffer::~VertexGpuBuffer()
     {
+        Cleanup();
     }
 
     void VertexGpuBuffer::CreateGPUBuffer()

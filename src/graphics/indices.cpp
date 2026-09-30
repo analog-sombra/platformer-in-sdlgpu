@@ -2,9 +2,6 @@
 
 namespace Engine::Graphics
 {
-    IndicesGpuBuffer::IndicesGpuBuffer()
-    {
-    }
 
     IndicesGpuBuffer::IndicesGpuBuffer(SDL_GPUDevice *device, std::vector<uint32_t> indices)
         : device(device), indices(indices)
@@ -13,12 +10,13 @@ namespace Engine::Graphics
 
     IndicesGpuBuffer::~IndicesGpuBuffer()
     {
+        Cleanup();
     }
 
     void IndicesGpuBuffer::CreateGPUBuffer()
     {
         SDL_GPUBufferCreateInfo indexBufferInfo{};
-        indexBufferInfo.size = sizeof(indices);
+        indexBufferInfo.size = indices.size() * sizeof(uint32_t);
         indexBufferInfo.usage = SDL_GPU_BUFFERUSAGE_INDEX;
         buffer = SDL_CreateGPUBuffer(device, &indexBufferInfo);
     }
@@ -26,12 +24,12 @@ namespace Engine::Graphics
     void IndicesGpuBuffer::TransferToGPUBuffer()
     {
         SDL_GPUTransferBufferCreateInfo indexTransferInfo{};
-        indexTransferInfo.size = sizeof(indices);
+        indexTransferInfo.size = indices.size() * sizeof(uint32_t);
         indexTransferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
         transferBuffer = SDL_CreateGPUTransferBuffer(device, &indexTransferInfo);
 
         uint32_t *indexData = (uint32_t *)SDL_MapGPUTransferBuffer(device, transferBuffer, false);
-        SDL_memcpy(indexData, indices.data(), sizeof(indices));
+        SDL_memcpy(indexData, indices.data(), indices.size() * sizeof(uint32_t));
         SDL_UnmapGPUTransferBuffer(device, transferBuffer);
     }
 
@@ -44,7 +42,7 @@ namespace Engine::Graphics
 
         SDL_GPUBufferRegion indexRegion{};
         indexRegion.buffer = buffer;
-        indexRegion.size = sizeof(indices);
+        indexRegion.size = indices.size() * sizeof(uint32_t);
         indexRegion.offset = 0;
 
         SDL_UploadToGPUBuffer(copyPass, &indexLocation, &indexRegion, true);

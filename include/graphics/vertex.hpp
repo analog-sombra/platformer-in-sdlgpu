@@ -24,7 +24,6 @@ namespace Engine::Graphics
         SDL_GPUTransferBuffer *transferBuffer;
 
     public:
-        VertexGpuBuffer();
         VertexGpuBuffer(SDL_GPUDevice *device, std::vector<TextureVertex> vertices);
         ~VertexGpuBuffer();
 

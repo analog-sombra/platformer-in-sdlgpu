@@ -23,7 +23,6 @@ namespace Engine::Graphics
         Engine::Graphics::GpuSampler sampler;
 
     public:
-        TextureGpuBuffer();
         TextureGpuBuffer(SDL_GPUDevice *device, const std::string &filePath);
         ~TextureGpuBuffer();
 

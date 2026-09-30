@@ -14,6 +14,7 @@
 #include "graphics/render.hpp"
 #include "graphics/vertex.hpp"
 #include "elements/button.hpp"
+#include <memory>
 
 namespace Engine
 {
@@ -26,7 +27,7 @@ namespace Engine
         Engine::Graphics::DevicePtr device = nullptr;
 
         Engine::Graphics::Render renderer;
-        Engine::Elements::Button button;
+        std::unique_ptr<Engine::Elements::Button> button;
 
     public:
         Game();

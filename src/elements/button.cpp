@@ -2,16 +2,8 @@
 
 namespace Engine::Elements
 {
-    Button::Button() {}
     Button::Button(SDL_Window *window, SDL_GPUDevice *device) : window(window), device(device)
     {
-
-        struct Transform
-        {
-            glm::vec3 position{0.0f, 0.0f, 0.0f};
-            glm::vec3 rotation{0.0f, 0.0f, 0.0f};
-            glm::vec3 scale{1.0f, 1.0f, 1.0f};
-        };
 
         std::vector<Engine::Graphics::TextureVertex> vertices = {
             {-0.5f, -0.5f, 0.0f, 0.0f, 0.0f}, // bottom left
@@ -24,69 +16,48 @@ namespace Engine::Elements
             0, 1, 2,
             3, 0, 2};
 
-        struct TransformUniform
-        {
-            glm::mat4 model;
-        };
+        model = glm::translate(glm::mat4(1.0f), position);
+        model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, scale);
 
-        Transform transform;
-
-        transform.position = {0.0f, 0.0f, 0.0f};
-        transform.rotation = {0.0f, 0.0f, 0.0f};
-        transform.scale = {0.6f, 1.0f, 1.0f};
-
-        model = glm::mat4(1.0f);
-
-        model = glm::translate(
-            model,
-            transform.position);
-
-        model = glm::rotate(
-            model,
-            glm::radians(transform.rotation.z),
-            glm::vec3(0.0f, 0.0f, 1.0f));
-
-        model = glm::scale(
-            model,
-            transform.scale);
-
-        TransformUniform transformData;
-        transformData.model = model;
+        view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -2.0f)); // Move quad back
 
         // create the vertex buffer
-        vertexBuffer = Engine::Graphics::VertexGpuBuffer(device, vertices);
-        vertexBuffer.CreateGPUBuffer();
+        vertexBuffer = std::make_unique<Engine::Graphics::VertexGpuBuffer>(device, vertices);
+        vertexBuffer->CreateGPUBuffer();
 
         // create the index buffer
-        indexBuffer = Engine::Graphics::IndicesGpuBuffer(device, indices);
-        indexBuffer.CreateGPUBuffer();
+        indexBuffer = std::make_unique<Engine::Graphics::IndicesGpuBuffer>(device, indices);
+        indexBuffer->CreateGPUBuffer();
 
         // create the texture buffer
-        textureBuffer = Engine::Graphics::TextureGpuBuffer(device, "./assets/bg.jpg");
-        textureBuffer.CreateGPUBuffer();
+        textureBuffer = std::make_unique<Engine::Graphics::TextureGpuBuffer>(device, "./assets/bg.jpg");
+        textureBuffer->CreateGPUBuffer();
 
         // create transfer buffers to upload to GPU buffers
-        vertexBuffer.TransferToGPUBuffer();
-        indexBuffer.TransferToGPUBuffer();
-        textureBuffer.TransferToGPUBuffer();
+        vertexBuffer->TransferToGPUBuffer();
+        indexBuffer->TransferToGPUBuffer();
+        textureBuffer->TransferToGPUBuffer();
 
         // start a copy pass
         SDL_GPUCommandBuffer *commandBuffer = SDL_AcquireGPUCommandBuffer(device);
         SDL_GPUCopyPass *copyPass = SDL_BeginGPUCopyPass(commandBuffer);
 
-        vertexBuffer.UploadToGPUBuffer(copyPass);
-        indexBuffer.UploadToGPUBuffer(copyPass);
-        textureBuffer.UploadToGPUBuffer(copyPass);
+        vertexBuffer->UploadToGPUBuffer(copyPass);
+        indexBuffer->UploadToGPUBuffer(copyPass);
+        textureBuffer->UploadToGPUBuffer(copyPass);
 
         // end the copy pass
         SDL_EndGPUCopyPass(copyPass);
         SDL_SubmitGPUCommandBuffer(commandBuffer);
 
         // creating the GPU sampler
-        textureBuffer.CreateSampler();
+        textureBuffer->CreateSampler();
 
-        gpuPipeline = Engine::Graphics::GpuPipeline(window, device);
-        gpuPipeline.CreatePipeline();
+        gpuPipeline = std::make_unique<Engine::Graphics::GpuPipeline>(window, device);
+        gpuPipeline->CreatePipeline();
     }
 
     Button::~Button() {}
@@ -94,33 +65,38 @@ namespace Engine::Elements
     void Button::render(SDL_GPURenderPass *renderPass, SDL_GPUCommandBuffer *commandBuffer)
     {
         // bind the graphics pipeline
-        gpuPipeline.BindGpuPipeline(renderPass);
+        gpuPipeline->BindGpuPipeline(renderPass);
 
         // bind the vertex buffer
-        vertexBuffer.BindGPUBuffer(renderPass);
+        vertexBuffer->BindGPUBuffer(renderPass);
 
         // bind the index buffer
-        indexBuffer.BindGPUBuffer(renderPass);
+        indexBuffer->BindGPUBuffer(renderPass);
 
         // bind the sampler
-        textureBuffer.BindGPUBuffer(renderPass);
+        textureBuffer->BindGPUBuffer(renderPass);
+
+        TransformUniform uniformData;
+        uniformData.model = model;
+        uniformData.projection = projection;
+        uniformData.view = view;
 
         SDL_PushGPUVertexUniformData(
             commandBuffer,
             0,
-            &model,
-            sizeof(model));
+            &uniformData,
+            sizeof(TransformUniform));
 
         // issue an indexed draw call (6 indices = 2 triangles for a rectangle)
         SDL_DrawGPUIndexedPrimitives(renderPass, 6, 1, 0, 0, 0);
     }
 
-    void Button::update() {}
+    void Button::update()
+    {
+        float aspect = 1280.0f / 720.0f; // width / height
+        float zoom = 45.0f;
+        projection = glm::perspective(glm::radians(zoom), aspect, 0.1f, 100.0f);
+    }
 
     void Button::handleEvent() {}
-
-    void Button::Cleanup()
-    {
-        vertexBuffer.Cleanup();
-    }
 }

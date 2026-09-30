@@ -28,7 +28,6 @@ namespace Engine
 
     Game::~Game()
     {
-        button.Cleanup();
     }
 
     void Game::Initialize()
@@ -59,7 +58,7 @@ namespace Engine
 
         renderer = Engine::Graphics::Render(window.get(), device.get());
 
-        button = Engine::Elements::Button(window.get(), device.get());
+        button = std::make_unique<Engine::Elements::Button>(window.get(), device.get());
     }
 
     void Game::run()
@@ -75,7 +74,7 @@ namespace Engine
     void Game::Update()
     {
         // Update implementation
-        button.update();
+        button->update();
     }
 
     void Game::Render()
@@ -83,7 +82,7 @@ namespace Engine
         renderer.Acquire();
         renderer.StartRender();
 
-        button.render(renderer.GetRenderPass(), renderer.GetCommandBuffer());
+        button->render(renderer.GetRenderPass(), renderer.GetCommandBuffer());
 
         renderer.EndRender();
     }
@@ -98,6 +97,6 @@ namespace Engine
                 isRunning = false;
             }
         }
-        button.handleEvent();
+        button->handleEvent();
     }
 }

@@ -12,11 +12,19 @@
 #include "graphics/indices.hpp"
 #include "graphics/texture.hpp"
 #include "graphics/pipeline.hpp"
+
 #include <vector>
+#include <memory>
 
 namespace Engine::Elements
 {
 
+    struct TransformUniform
+    {
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 projection;
+    };
     class Button
     {
 
@@ -24,17 +32,22 @@ namespace Engine::Elements
         SDL_Window *window;
         SDL_GPUDevice *device;
 
-        Engine::Graphics::VertexGpuBuffer vertexBuffer;
-        Engine::Graphics::IndicesGpuBuffer indexBuffer;
-        Engine::Graphics::TextureGpuBuffer textureBuffer;
+        std::unique_ptr<Engine::Graphics::VertexGpuBuffer> vertexBuffer;
+        std::unique_ptr<Engine::Graphics::IndicesGpuBuffer> indexBuffer;
+        std::unique_ptr<Engine::Graphics::TextureGpuBuffer> textureBuffer;
+        std::unique_ptr<Engine::Graphics::GpuPipeline> gpuPipeline;
 
-        Engine::Graphics::GpuPipeline gpuPipeline;
-        Engine::Graphics::GpuSampler sampler;
-
+        // Transform components
+        glm::vec3 position = glm::vec3(0.0f);
+        glm::vec3 rotation = glm::vec3(0.0f); // Euler angles in radians
+        glm::vec3 scale = glm::vec3(1.0f);
+        
         glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 projection;
 
     public:
-        Button();
+        // Button();
         Button(SDL_Window *window, SDL_GPUDevice *device);
         ~Button();
 
@@ -42,7 +55,7 @@ namespace Engine::Elements
         void update();
         void handleEvent();
 
-        void Cleanup();
+        // void Cleanup();
     };
 }
 #endif // __ELEMENTN_BUTTON_HPP__
