@@ -7,7 +7,7 @@
 #include <SDL3_shadercross/SDL_shadercross.h>
 #include <SDL3/SDL_init.h>
 #include <SDL3/SDL_video.h>
-
+#include <SDL3_ttf/SDL_ttf.h>
 #include <spdlog/spdlog.h>
 #include <fmt/core.h>
 #include "graphics/deleter.hpp"
@@ -37,8 +37,6 @@ namespace Engine
         void Update();
         void Render();
         void HandleInput();
-
-        
     };
 }
 

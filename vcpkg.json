@@ -20,6 +20,9 @@
       "name": "sdl3-shadercross"
     },
     {
+      "name": "sdl3-ttf"
+    },
+    {
       "name": "glm"
     }
   ]

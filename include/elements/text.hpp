@@ -1,5 +1,5 @@
-#ifndef __ELEMENTN_BUTTON_HPP__
-#define __ELEMENTN_BUTTON_HPP__
+#ifndef __ELEMENTN_TEXT_HPP__
+#define __ELEMENTN_TEXT_HPP__
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -12,7 +12,6 @@
 #include "graphics/indices.hpp"
 #include "graphics/texture.hpp"
 #include "graphics/pipeline.hpp"
-#include "graphics/texttexture.hpp"
 
 #include <vector>
 #include <memory>
@@ -26,7 +25,8 @@ namespace Engine::Elements
         glm::mat4 view;
         glm::mat4 projection;
     };
-    class Button
+
+    class Text
     {
 
     private:
@@ -35,8 +35,7 @@ namespace Engine::Elements
 
         std::unique_ptr<Engine::Graphics::VertexGpuBuffer> vertexBuffer;
         std::unique_ptr<Engine::Graphics::IndicesGpuBuffer> indexBuffer;
-        // std::unique_ptr<Engine::Graphics::TextureGpuBuffer> textureBuffer;
-        std::unique_ptr<Engine::Graphics::TextTextureGpuBuffer> textureBuffer;
+        std::unique_ptr<Engine::Graphics::TextureGpuBuffer> textureBuffer;
         std::unique_ptr<Engine::Graphics::GpuPipeline> gpuPipeline;
 
         // Transform components
@@ -49,9 +48,9 @@ namespace Engine::Elements
         glm::mat4 projection;
 
     public:
-        // Button();
-        Button(SDL_Window *window, SDL_GPUDevice *device);
-        ~Button();
+        // Text();
+        Text(SDL_Window *window, SDL_GPUDevice *device);
+        ~Text();
 
         void render(SDL_GPURenderPass *renderPass, SDL_GPUCommandBuffer *commandBuffer);
         void update();
@@ -60,4 +59,4 @@ namespace Engine::Elements
         // void Cleanup();
     };
 }
-#endif // __ELEMENTN_BUTTON_HPP__
+#endif // __ELEMENTN_TEXT_HPP__

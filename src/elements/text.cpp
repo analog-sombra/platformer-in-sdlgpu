@@ -1,8 +1,8 @@
-#include "elements/button.hpp"
+#include "elements/text.hpp"
 
 namespace Engine::Elements
 {
-    Button::Button(SDL_Window *window, SDL_GPUDevice *device) : window(window), device(device)
+    Text::Text(SDL_Window *window, SDL_GPUDevice *device) : window(window), device(device)
     {
 
         std::vector<Engine::Graphics::TextureVertex> vertices = {
@@ -33,8 +33,7 @@ namespace Engine::Elements
         indexBuffer->CreateGPUBuffer();
 
         // create the texture buffer
-        // textureBuffer = std::make_unique<Engine::Graphics::TextureGpuBuffer>(device, "./assets/bg.jpg");
-        textureBuffer = std::make_unique<Engine::Graphics::TextTextureGpuBuffer>(device, "test text");
+        textureBuffer = std::make_unique<Engine::Graphics::TextureGpuBuffer>(device, "./assets/bg.jpg");
         textureBuffer->CreateGPUBuffer();
 
         // create transfer buffers to upload to GPU buffers
@@ -61,9 +60,9 @@ namespace Engine::Elements
         gpuPipeline->CreatePipeline();
     }
 
-    Button::~Button() {}
+    Text::~Text() {}
 
-    void Button::render(SDL_GPURenderPass *renderPass, SDL_GPUCommandBuffer *commandBuffer)
+    void Text::render(SDL_GPURenderPass *renderPass, SDL_GPUCommandBuffer *commandBuffer)
     {
         // bind the graphics pipeline
         gpuPipeline->BindGpuPipeline(renderPass);
@@ -92,12 +91,12 @@ namespace Engine::Elements
         SDL_DrawGPUIndexedPrimitives(renderPass, 6, 1, 0, 0, 0);
     }
 
-    void Button::update()
+    void Text::update()
     {
         float aspect = 1280.0f / 720.0f; // width / height
         float zoom = 45.0f;
         projection = glm::perspective(glm::radians(zoom), aspect, 0.1f, 100.0f);
     }
 
-    void Button::handleEvent() {}
+    void Text::handleEvent() {}
 }

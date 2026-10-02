@@ -36,7 +36,11 @@ namespace Engine
         SDL_SetLogPriorities(SDL_LOG_PRIORITY_WARN);
         SDL_SetLogOutputFunction(MyLogCallback, NULL);
 
-        SDL_Init(SDL_INIT_VIDEO);
+        // Initialize SDL with video support
+        if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
+        {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "SDL_Init failed: %s", SDL_GetError());
+        }
 
         auto game_win = SDL_CreateWindow("Hello SDL3", 800, 600, SDL_WINDOW_RESIZABLE);
         window = Engine::Graphics::WindowPtr(game_win);
@@ -52,6 +56,12 @@ namespace Engine
         if (!device)
         {
             spdlog::error("Failed to create SDL GPU device {}", SDL_GetError());
+        }
+
+        // Initialize SDL_ttf for text rendering
+        if (!TTF_Init())
+        {
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "TTF_Init failed: %s", SDL_GetError());
         }
 
         SDL_ClaimWindowForGPUDevice(device.get(), window.get());
