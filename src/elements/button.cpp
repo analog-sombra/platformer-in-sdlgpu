@@ -34,7 +34,7 @@ namespace Engine::Elements
 
         // create the texture buffer
         // textureBuffer = std::make_unique<Engine::Graphics::TextureGpuBuffer>(device, "./assets/bg.jpg");
-        textureBuffer = std::make_unique<Engine::Graphics::TextTextureGpuBuffer>(device, "test text");
+        textureBuffer = std::make_unique<Engine::Graphics::TextTextureGpuBuffer>(device, "Play");
         textureBuffer->CreateGPUBuffer();
 
         // create transfer buffers to upload to GPU buffers

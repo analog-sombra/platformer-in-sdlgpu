@@ -28,6 +28,8 @@ namespace Engine::Graphics
             spdlog::error("Could not convert image: {}", SDL_GetError());
         }
 
+        SDL_DestroySurface(imageData);
+
         // create the GPU texture from the image data
         SDL_GPUTextureCreateInfo textureInfo{};
 
@@ -105,6 +107,10 @@ namespace Engine::Graphics
         if (device && transferBuffer)
         {
             SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
+        }
+        if (rgbaSurface)
+        {
+            SDL_DestroySurface(rgbaSurface);
         }
         sampler.Cleanup();
     }

@@ -9,8 +9,8 @@ namespace Engine::Graphics
     void GpuSampler::CreateSampler(SDL_GPUDevice *device)
     {
         SDL_GPUSamplerCreateInfo samplerInfo{};
-        samplerInfo.min_filter = SDL_GPU_FILTER_LINEAR;
-        samplerInfo.mag_filter = SDL_GPU_FILTER_LINEAR;
+        samplerInfo.min_filter = SDL_GPU_FILTER_NEAREST;
+        samplerInfo.mag_filter = SDL_GPU_FILTER_NEAREST;
 
         samplerInfo.mipmap_mode =
             SDL_GPU_SAMPLERMIPMAPMODE_NEAREST;

@@ -15,7 +15,7 @@ namespace Engine::Graphics
     void TextTextureGpuBuffer::CreateGPUBuffer()
     {
 
-        TTF_Font *font = TTF_OpenFont("assets/fonts/candy.otf", 24);
+        TTF_Font *font = TTF_OpenFont("assets/fonts/candy.otf", 64);
         if (font == NULL)
         {
             spdlog::error("Could not load font: {}", SDL_GetError());
@@ -35,6 +35,9 @@ namespace Engine::Graphics
         {
             spdlog::error("Could not convert text surface: {}", SDL_GetError());
         }
+
+        TTF_CloseFont(font);
+        SDL_DestroySurface(textSurface);
 
         // create the GPU texture from the image data
         SDL_GPUTextureCreateInfo textureInfo{};
@@ -58,14 +61,34 @@ namespace Engine::Graphics
     }
     void TextTextureGpuBuffer::TransferToGPUBuffer()
     {
+
+        const size_t rowSize =
+            static_cast<size_t>(rgbaSurface->w) * 4;
+
+        const size_t bufferSize =
+            rowSize * static_cast<size_t>(rgbaSurface->h);
+
         SDL_GPUTransferBufferCreateInfo transferInfo{};
-        transferInfo.size = static_cast<Uint32>(rgbaSurface->w * rgbaSurface->h * 4);
+        transferInfo.size = static_cast<Uint32>(bufferSize);
         transferInfo.usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD;
         transferBuffer = SDL_CreateGPUTransferBuffer(device, &transferInfo);
 
         // upload texture data
         void *mapped = SDL_MapGPUTransferBuffer(device, transferBuffer, false);
-        SDL_memcpy(mapped, rgbaSurface->pixels, rgbaSurface->h * rgbaSurface->pitch);
+        // SDL_memcpy(mapped, rgbaSurface->pixels, rgbaSurface->h * rgbaSurface->pitch);
+        auto *dst =
+            static_cast<std::uint8_t *>(mapped);
+
+        auto *src =
+            static_cast<const std::uint8_t *>(rgbaSurface->pixels);
+
+        for (int y = 0; y < rgbaSurface->h; ++y)
+        {
+            SDL_memcpy(
+                dst + y * rowSize,
+                src + y * rgbaSurface->pitch,
+                rowSize);
+        }
         SDL_UnmapGPUTransferBuffer(device, transferBuffer);
     }
     void TextTextureGpuBuffer::UploadToGPUBuffer(SDL_GPUCopyPass *copyPass)
@@ -115,6 +138,11 @@ namespace Engine::Graphics
             SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
         }
         sampler.Cleanup();
+
+        if (rgbaSurface)
+        {
+            SDL_DestroySurface(rgbaSurface);
+        }
     }
 
 }
